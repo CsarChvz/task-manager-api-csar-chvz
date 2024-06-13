@@ -1,0 +1,35 @@
+services:
+  taskmanager:
+    image: postgres:latest  
+    container_name: taskmanager_db  
+    environment:
+      POSTGRES_USER: ${DB_USERNAME} 
+      POSTGRES_PASSWORD: ${DB_PASSWORD} 
+      POSTGRES_DB: ${DB_NAME} 
+    ports:
+      - "5432:5432"  
+    volumes:
+      - ./taskmanager_data:/var/lib/postgresql/data  
+    networks:
+      - taskmanager_network  
+
+  pgadmin:
+    image: dpage/pgadmin4:latest  
+    container_name: pgadmin 
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com  
+      PGADMIN_DEFAULT_PASSWORD: admin  
+    ports:
+      - "5050:80"  
+    depends_on:
+      - taskmanager  
+    networks:
+      - taskmanager_network  
+
+volumes:
+  taskmanager_data:
+    driver: local  
+
+networks:
+  taskmanager_network:
+    driver: bridge  
