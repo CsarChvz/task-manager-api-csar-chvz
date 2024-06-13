@@ -8,32 +8,32 @@ import { CommentsModule } from './comments/comments.module';
 import { AttachmentsModule } from './attachments/attachments.module';
 import { LogsModule } from './logs/logs.module';
 @Module({
-  imports: [ConfigModule.forRoot(),
+  imports: [
+    ConfigModule.forRoot(),
 
-  TypeOrmModule.forRoot({
-    type: 'postgres',
-    host: process.env.DB_HOST,
-    port: +process.env.DB_PORT,
-    database: process.env.DB_NAME,
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    autoLoadEntities: true,
-    // En PROD, syncronize debe estar en falsea
-    synchronize: true
-  }),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: process.env.DB_HOST,
+      port: +process.env.DB_PORT,
+      database: process.env.DB_NAME,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      autoLoadEntities: true,
+      // En PROD, syncronize debe estar en falsea
+      synchronize: true,
+    }),
 
-  UsersModule,
+    UsersModule,
 
-  TasksModule,
+    TasksModule,
 
-  TagsModule,
+    TagsModule,
 
-  CommentsModule,
+    CommentsModule,
 
-  AttachmentsModule,
+    AttachmentsModule,
 
-  LogsModule
-
+    LogsModule,
   ],
 })
-export class AppModule { }
+export class AppModule {}
