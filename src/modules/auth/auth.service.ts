@@ -12,15 +12,18 @@ import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { hashPassword } from 'src/common/utils/hash-password.util';
 import { LoginUserDto } from './dto/login-user.dto';
+import { JwtPayload } from './interfaces/jwt-payload.interface';
+
+import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+
+    private readonly jwtService: JwtService,
   ) {}
 
-  async create(
-    createUserDto: CreateUserDto,
-  ): Promise<Omit<User, 'password_hash'>> {
+  async create(createUserDto: CreateUserDto) {
     try {
       const passwordHash = await hashPassword(createUserDto.password);
 
@@ -32,7 +35,10 @@ export class AuthService {
       await this.userRepository.save(user);
 
       const { password_hash, ...result } = user;
-      return result;
+      return {
+        ...result,
+        token: this.getJwtToken({ id: user.id, email: user.email }),
+      };
     } catch (error) {
       this.handleDBErrors(error);
     }
@@ -42,7 +48,7 @@ export class AuthService {
     const { password, email } = loginUserDto;
     const user = await this.userRepository.findOne({
       where: { email },
-      select: ['id', 'email', 'password_hash'],
+      select: { id: true, email: true },
     });
 
     if (!user)
@@ -53,7 +59,10 @@ export class AuthService {
       throw new UnauthorizedException('Credentials are not valid (password)');
     }
 
-    return user;
+    return {
+      ...user,
+      token: this.getJwtToken({ id: user.id, email: user.email }),
+    };
   }
 
   findAll() {
@@ -66,6 +75,10 @@ export class AuthService {
 
   remove(id: number) {
     return `This action removes a #${id} auth`;
+  }
+
+  private getJwtToken(payload: JwtPayload) {
+    return this.jwtService.sign(payload);
   }
 
   private handleDBErrors(error: any): never {

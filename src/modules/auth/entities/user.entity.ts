@@ -9,6 +9,8 @@ import {
   UpdateDateColumn,
   OneToMany,
   Index,
+  BeforeInsert,
+  BeforeUpdate,
 } from 'typeorm';
 
 @Entity()
@@ -40,4 +42,14 @@ export class User {
 
   @OneToMany(() => Log, (log) => log.user)
   logs: Log[];
+
+  @BeforeInsert()
+  checkFieldsBeforeInsert() {
+    this.email = this.email.toLowerCase().trim();
+  }
+
+  @BeforeUpdate()
+  checkFieldsBeforeUpdate() {
+    this.checkFieldsBeforeInsert();
+  }
 }
