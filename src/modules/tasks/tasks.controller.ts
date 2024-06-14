@@ -7,53 +7,84 @@ import {
   Param,
   Body,
   Query,
+  Logger,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
-import { CreateTaskDto } from './dto/create-task.dto';
-import { UpdateTaskDto } from './dto/update-task.dto';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  CreateTaskDto,
+  DeleteTaskResponseDto,
+  SearchTasksQueryDto,
+  UpdateTaskDto,
+} from './dto';
+import {
+  ApiTags,
+  ApiOkResponse,
+  ApiCreatedResponse,
+  ApiResponse,
+  ApiQuery,
+} from '@nestjs/swagger';
+import { User } from '../auth/entities/user.entity';
+import { Task } from './entities/task.entity';
+import { Auth, GetUser } from '../auth/decorators';
+
 @ApiTags('Tasks')
 @Controller('tasks')
 export class TasksController {
+  private readonly logger = new Logger(TasksController.name);
+
   constructor(private readonly tasksService: TasksService) {}
 
   @Get()
-  async findAll(
-    @Query('page') page: number,
-    @Query('limit') limit: number,
-    @Query('status') status: string,
-    @Query('dueDate') dueDate: string,
-  ) {
-    return this.tasksService.findAll({ page, limit, status, dueDate });
+  @ApiOkResponse({ type: [Task], description: 'Get a list of tasks' })
+  async findAll(@Query('page') page: number, @Query('limit') limit: number) {
+    return this.tasksService.findAll({ page, limit });
+  }
+
+  @Get('search')
+  @ApiOkResponse({
+    type: [Task],
+    description: 'Search tasks based on criteria',
+  })
+  async search(@Query() query: SearchTasksQueryDto) {
+    return this.tasksService.search(query);
   }
 
   @Get(':id')
+  @Auth()
+  @ApiOkResponse({ type: Task, description: 'Get a task by ID' })
+  @ApiResponse({ status: 404, description: 'Task not found' })
   async findOne(@Param('id') id: number) {
     return this.tasksService.findOne(id);
   }
 
   @Post()
-  async create(@Body() createTaskDto: CreateTaskDto) {
-    return this.tasksService.create(createTaskDto);
+  @Auth()
+  @ApiCreatedResponse({ type: Task, description: 'Create a new task' })
+  @ApiResponse({ status: 400, description: 'Invalid data' })
+  async create(@Body() createTaskDto: CreateTaskDto, @GetUser() user: User) {
+    const createdTask = await this.tasksService.create(createTaskDto, user);
+    this.logger.log(
+      `Task created successfully: ${JSON.stringify(createdTask)}`,
+    );
+    return createdTask;
   }
 
   @Put(':id')
+  @Auth()
+  @ApiOkResponse({ type: Task, description: 'Update a task by ID' })
+  @ApiResponse({ status: 404, description: 'Task not found' })
   async update(@Param('id') id: number, @Body() updateTaskDto: UpdateTaskDto) {
     return this.tasksService.update(id, updateTaskDto);
   }
 
   @Delete(':id')
+  @Auth()
+  @ApiOkResponse({
+    type: DeleteTaskResponseDto,
+    description: 'Delete a task by ID',
+  })
+  @ApiResponse({ status: 404, description: 'Task not found' })
   async remove(@Param('id') id: number) {
     return this.tasksService.remove(id);
-  }
-
-  @Get('search')
-  async search(
-    @Query('keyword') keyword: string,
-    @Query('status') status: string,
-    @Query('dueDate') dueDate: string,
-    @Query('fileType') fileType: string,
-  ) {
-    return this.tasksService.search({ keyword, status, dueDate, fileType });
   }
 }

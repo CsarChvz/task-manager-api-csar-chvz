@@ -1,15 +1,22 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
+import { Repository, Like, In } from 'typeorm';
 import { Task } from './entities/task.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { User } from '../auth/entities/user.entity';
+import { Attachment } from '../attachments/entities/attachment.entity';
+import { Tag } from '../tags/entities/tag.entity';
 
 @Injectable()
 export class TasksService {
   constructor(
     @InjectRepository(Task)
     private readonly taskRepository: Repository<Task>,
+    @InjectRepository(Tag)
+    private readonly tagRepository: Repository<Tag>,
+    @InjectRepository(Attachment)
+    private readonly attachmentRepository: Repository<Attachment>,
   ) {}
 
   async findAll(query): Promise<{ data: Task[]; count: number }> {
@@ -34,9 +41,30 @@ export class TasksService {
     return task;
   }
 
-  async create(createTaskDto: CreateTaskDto): Promise<Task> {
-    const task = this.taskRepository.create(createTaskDto);
+  async create(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
+    const { title, description, status, due_date, tags, attachments } =
+      createTaskDto;
+
+    const task = this.taskRepository.create({
+      title,
+      description,
+      status,
+      due_date,
+      created_by: user,
+    });
+
+    if (tags) {
+      task.tags = await this.tagRepository.find({ where: { id: In(tags) } });
+    }
+
+    if (attachments) {
+      task.attachments = await this.attachmentRepository.find({
+        where: { id: In(attachments) },
+      });
+    }
+
     await this.taskRepository.save(task);
+
     return task;
   }
 
@@ -47,25 +75,43 @@ export class TasksService {
     return task;
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: number): Promise<{ message: string }> {
     const result = await this.taskRepository.delete(id);
     if (result.affected === 0) {
       throw new NotFoundException(`Task with ID ${id} not found`);
     }
+    return { message: `Task with ID ${id} has been successfully removed` };
   }
 
-  async search(criteria): Promise<Task[]> {
-    const { keyword, status, dueDate, fileType } = criteria;
-    const where = [];
+  async search(criteria: {
+    keyword?: string;
+    status?: string;
+    dueDate?: string;
+    fileType?: string;
+  }): Promise<Task[]> {
+    // Construcción del objeto `where` dinámicamente
+    const where: any = [];
 
-    if (keyword) {
-      where.push({ title: Like(`%${keyword}%`) });
-      where.push({ description: Like(`%${keyword}%`) });
+    if (criteria.keyword) {
+      where.push(
+        { title: Like(`%${criteria.keyword}%`) },
+        { description: Like(`%${criteria.keyword}%`) },
+      );
     }
 
-    if (status) where.push({ status });
-    if (dueDate) where.push({ due_date: dueDate });
+    if (criteria.status) {
+      where.push({ status: criteria.status });
+    }
 
-    return this.taskRepository.find({ where });
+    if (criteria.dueDate) {
+      where.push({ due_date: criteria.dueDate });
+    }
+
+    const tasks = await this.taskRepository.find({
+      where: where.length ? where : undefined,
+      relations: ['tags', 'attachments'],
+    });
+
+    return tasks;
   }
 }
