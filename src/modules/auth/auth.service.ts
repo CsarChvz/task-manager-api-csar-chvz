@@ -48,7 +48,7 @@ export class AuthService {
     const { password, email } = loginUserDto;
     const user = await this.userRepository.findOne({
       where: { email },
-      select: { id: true, email: true },
+      select: { id: true, email: true, password_hash: true }, // Asegúrate de incluir password_hash
     });
 
     if (!user)
@@ -64,19 +64,12 @@ export class AuthService {
       token: this.getJwtToken({ id: user.id, email: user.email }),
     };
   }
-
-  findAll() {
-    return `This action returns all auth`;
+  async checkAuthStatus(user: User) {
+    return {
+      ...user,
+      token: this.getJwtToken({ id: user.id, email: user.email }),
+    };
   }
-
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
-  }
-
   private getJwtToken(payload: JwtPayload) {
     return this.jwtService.sign(payload);
   }
