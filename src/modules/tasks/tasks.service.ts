@@ -46,8 +46,7 @@ export class TasksService {
   }
 
   async create(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
-    const { title, description, status, due_date, tags, attachments } =
-      createTaskDto;
+    const { title, description, status, due_date, tags } = createTaskDto;
 
     const task = this.taskRepository.create({
       title,
@@ -72,15 +71,6 @@ export class TasksService {
       );
     }
 
-    if (attachments) {
-      task.attachments = await Promise.all(
-        attachments.map(async (attachment) => {
-          const newAttachment = this.attachmentRepository.create(attachment);
-          await this.attachmentRepository.save(newAttachment);
-          return newAttachment;
-        }),
-      );
-    }
 
     await this.taskRepository.save(task);
 

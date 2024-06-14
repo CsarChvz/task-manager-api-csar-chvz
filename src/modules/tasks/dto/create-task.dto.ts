@@ -7,10 +7,10 @@ import {
   IsOptional,
   IsArray,
   ValidateNested,
+  ArrayNotEmpty,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { CreateTagDto } from '../../tags/dto/create-tag.dto';
-import { CreateAttachmentForTaskDto } from './create-attachment-for-task.dto';
 
 export class CreateTaskDto {
   @ApiProperty({ description: 'The title of the task', maxLength: 255 })
@@ -48,15 +48,4 @@ export class CreateTaskDto {
   @Type(() => CreateTagDto)
   @IsOptional()
   tags: CreateTagDto[];
-
-  @ApiProperty({
-    description: 'Attachments associated with the task',
-    type: () => [CreateAttachmentForTaskDto],
-    example: [{ file_path: 'path/to/file.pdf', file_type: 'pdf' }],
-  })
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => CreateAttachmentForTaskDto)
-  @IsOptional()
-  attachments: CreateAttachmentForTaskDto[];
 }
