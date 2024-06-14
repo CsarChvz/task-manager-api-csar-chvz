@@ -70,6 +70,8 @@ export class AttachmentsController {
   })
   @ApiResponse({ status: 404, description: 'Attachment not found' })
   async remove(@Param('id') id: number) {
-    return this.attachmentsService.remove(id);
+    const result = this.attachmentsService.remove(id);
+    this.logger.log(`Attachment with ID ${id} has been successfully removed`);
+    return result;
   }
 }

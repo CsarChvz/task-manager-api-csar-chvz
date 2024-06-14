@@ -4,12 +4,15 @@ import { Repository } from 'typeorm';
 import { Tag } from './entities/tag.entity';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
+import { Task } from '../tasks/entities/task.entity';
 
 @Injectable()
 export class TagsService {
   constructor(
     @InjectRepository(Tag)
     private readonly tagRepository: Repository<Tag>,
+    @InjectRepository(Task)
+    private readonly taskRepository: Repository<Task>,
   ) {}
 
   async findAll(): Promise<Tag[]> {
@@ -39,7 +42,23 @@ export class TagsService {
 
   async remove(id: number): Promise<{ message: string }> {
     const tag = await this.findOne(id);
+
     await this.tagRepository.remove(tag);
     return { message: `Tag with ID ${id} has been successfully removed` };
+  }
+
+  private async removeTagRelations(tagId: number): Promise<void> {
+    // Busca todas las tareas que tienen el tag específico
+    const tasks = await this.taskRepository
+      .createQueryBuilder('task')
+      .leftJoinAndSelect('task.tags', 'tag')
+      .where('tag.id = :tagId', { tagId })
+      .getMany();
+
+    // Itera sobre cada tarea y elimina el tag
+    for (const task of tasks) {
+      task.tags = task.tags.filter((tag) => tag.id !== tagId);
+      await this.taskRepository.save(task);
+    }
   }
 }

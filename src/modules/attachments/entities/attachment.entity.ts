@@ -37,7 +37,7 @@ export class Attachment {
   })
   uploaded_at: Date;
 
-  @ManyToOne(() => Task, (task) => task.attachments)
+  @ManyToOne(() => Task, (task) => task.attachments, { onDelete: 'CASCADE' })
   @ApiProperty({
     description: 'The task associated with the attachment',
     type: () => Task,
