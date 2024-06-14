@@ -98,10 +98,4 @@ export class Task {
   })
   attachments: Attachment[];
 
-  @OneToMany(() => Log, (log) => log.task)
-  @ApiProperty({
-    description: 'Logs associated with the task',
-    type: () => [Log],
-  })
-  logs: Log[];
 }

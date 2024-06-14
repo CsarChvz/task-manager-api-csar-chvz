@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Log } from './entities/log.entity';
 import { FilterLogsDto } from './dto/filter-logs.dto';
+import { User } from '../auth/entities/user.entity';
 
 @Injectable()
 export class LogsService {
@@ -14,7 +15,6 @@ export class LogsService {
   async findAll(filterLogsDto: FilterLogsDto): Promise<Log[]> {
     const { entity_type, action_type, entity_id, user_id } = filterLogsDto;
 
-    // Construcción dinámica del objeto de búsqueda
     const where: any = {};
 
     if (entity_type) {
@@ -27,23 +27,39 @@ export class LogsService {
       where.entity_id = entity_id;
     }
     if (user_id) {
-      where.user = { id: parseInt(user_id, 10) }; // Relación con la entidad User
+      where.user = { id: parseInt(user_id, 10) };
     }
 
     return this.logRepository.find({
       where,
-      relations: ['user', 'task'], // Incluir relaciones si es necesario
     });
   }
 
   async findOne(id: number): Promise<Log> {
     const log = await this.logRepository.findOne({
       where: { id },
-      relations: ['user', 'task'],
     });
     if (!log) {
       throw new NotFoundException(`Log with ID ${id} not found`);
     }
     return log;
+  }
+
+  async createLog(
+    user: User,
+    actionType: string,
+    entityType: string,
+    entityId: number,
+    changes: string,
+  ) {
+    const log = this.logRepository.create({
+      user,
+      action_type: actionType,
+      entity_type: entityType,
+      entity_id: entityId,
+      changes,
+    });
+
+    await this.logRepository.save(log);
   }
 }

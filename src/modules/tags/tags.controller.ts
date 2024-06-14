@@ -18,7 +18,8 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { Tag } from './entities/tag.entity';
-import { Auth } from '../auth/decorators';
+import { Auth, GetUser } from '../auth/decorators';
+import { User } from '../auth/entities/user.entity';
 
 @ApiTags('Tags')
 @Controller('tags')
@@ -30,22 +31,22 @@ export class TagsController {
 
   @Get()
   @ApiOkResponse({ type: [Tag], description: 'Get a list of tags' })
-  async findAll() {
-    return this.tagsService.findAll();
+  async findAll(@GetUser() user: User) {
+    return this.tagsService.findAll(user);
   }
 
   @Get(':id')
   @ApiOkResponse({ type: Tag, description: 'Get a tag by ID' })
   @ApiResponse({ status: 404, description: 'Tag not found' })
-  async findOne(@Param('id') id: number) {
-    return this.tagsService.findOne(id);
+  async findOne(@Param('id') id: number, @GetUser() user: User) {
+    return this.tagsService.findOne(id, user);
   }
 
   @Post()
   @ApiCreatedResponse({ type: Tag, description: 'Create a new tag' })
   @ApiResponse({ status: 400, description: 'Invalid data' })
-  async create(@Body() createTagDto: CreateTagDto) {
-    const createdTag = await this.tagsService.create(createTagDto);
+  async create(@Body() createTagDto: CreateTagDto, @GetUser() user: User) {
+    const createdTag = await this.tagsService.create(createTagDto, user);
     this.logger.log(`Tag created successfully: ${JSON.stringify(createdTag)}`);
     return createdTag;
   }
@@ -53,8 +54,12 @@ export class TagsController {
   @Put(':id')
   @ApiOkResponse({ type: Tag, description: 'Update a tag by ID' })
   @ApiResponse({ status: 404, description: 'Tag not found' })
-  async update(@Param('id') id: number, @Body() updateTagDto: UpdateTagDto) {
-    return this.tagsService.update(id, updateTagDto);
+  async update(
+    @Param('id') id: number,
+    @Body() updateTagDto: UpdateTagDto,
+    @GetUser() user: User,
+  ) {
+    return this.tagsService.update(id, updateTagDto, user);
   }
 
   @Delete(':id')
@@ -66,7 +71,7 @@ export class TagsController {
     },
   })
   @ApiResponse({ status: 404, description: 'Tag not found' })
-  async remove(@Param('id') id: number) {
-    return this.tagsService.remove(id);
+  async remove(@Param('id') id: number, @GetUser() user: User) {
+    return this.tagsService.remove(id, user);
   }
 }

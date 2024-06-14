@@ -18,7 +18,8 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { Comment } from './entities/comment.entity';
-import { Auth } from '../auth/decorators';
+import { Auth, GetUser } from '../auth/decorators';
+import { User } from '../auth/entities/user.entity';
 
 @ApiTags('Comments')
 @Controller('comments')
@@ -30,22 +31,28 @@ export class CommentsController {
 
   @Get()
   @ApiOkResponse({ type: [Comment], description: 'Get a list of comments' })
-  async findAll() {
-    return this.commentsService.findAll();
+  async findAll(@GetUser() user: User) {
+    return this.commentsService.findAll(user);
   }
 
   @Get(':id')
   @ApiOkResponse({ type: Comment, description: 'Get a comment by ID' })
   @ApiResponse({ status: 404, description: 'Comment not found' })
-  async findOne(@Param('id') id: number) {
-    return this.commentsService.findOne(id);
+  async findOne(@Param('id') id: number, @GetUser() user: User) {
+    return this.commentsService.findOne(id, user);
   }
 
   @Post()
   @ApiCreatedResponse({ type: Comment, description: 'Create a new comment' })
   @ApiResponse({ status: 400, description: 'Invalid data' })
-  async create(@Body() createCommentDto: CreateCommentDto) {
-    const createdComment = await this.commentsService.create(createCommentDto);
+  async create(
+    @Body() createCommentDto: CreateCommentDto,
+    @GetUser() user: User,
+  ) {
+    const createdComment = await this.commentsService.create(
+      createCommentDto,
+      user,
+    );
     this.logger.log(
       `Comment created successfully: ${JSON.stringify(createdComment)}`,
     );
@@ -58,8 +65,9 @@ export class CommentsController {
   async update(
     @Param('id') id: number,
     @Body() updateCommentDto: UpdateCommentDto,
+    @GetUser() user: User,
   ) {
-    return this.commentsService.update(id, updateCommentDto);
+    return this.commentsService.update(id, updateCommentDto, user);
   }
 
   @Delete(':id')
@@ -71,7 +79,7 @@ export class CommentsController {
     },
   })
   @ApiResponse({ status: 404, description: 'Comment not found' })
-  async remove(@Param('id') id: number) {
-    return this.commentsService.remove(id);
+  async remove(@Param('id') id: number, @GetUser() user: User) {
+    return this.commentsService.remove(id, user);
   }
 }

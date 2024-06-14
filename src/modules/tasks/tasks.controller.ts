@@ -29,6 +29,7 @@ import { Auth, GetUser } from '../auth/decorators';
 
 @ApiTags('Tasks')
 @Controller('tasks')
+@Auth()
 export class TasksController {
   private readonly logger = new Logger(TasksController.name);
 
@@ -36,7 +37,6 @@ export class TasksController {
 
   @Get()
   @ApiOkResponse({ type: [Task], description: 'Get a list of tasks' })
-  @Auth()
   async findAll(
     @Query('page') page: number,
     @Query('limit') limit: number,
@@ -50,16 +50,16 @@ export class TasksController {
     type: [Task],
     description: 'Search tasks based on criteria',
   })
-  async search(@Query() query: SearchTasksQueryDto) {
-    return this.tasksService.search(query);
+  async search(@Query() query: SearchTasksQueryDto, @GetUser() user: User) {
+    return this.tasksService.search(query, user);
   }
 
   @Get(':id')
   @Auth()
   @ApiOkResponse({ type: Task, description: 'Get a task by ID' })
   @ApiResponse({ status: 404, description: 'Task not found' })
-  async findOne(@Param('id') id: number) {
-    return this.tasksService.findOne(id);
+  async findOne(@Param('id') id: number, @GetUser() user: User) {
+    return this.tasksService.findOne(id, user);
   }
 
   @Post()
@@ -78,8 +78,12 @@ export class TasksController {
   @Auth()
   @ApiOkResponse({ type: Task, description: 'Update a task by ID' })
   @ApiResponse({ status: 404, description: 'Task not found' })
-  async update(@Param('id') id: number, @Body() updateTaskDto: UpdateTaskDto) {
-    return this.tasksService.update(id, updateTaskDto);
+  async update(
+    @Param('id') id: number,
+    @Body() updateTaskDto: UpdateTaskDto,
+    @GetUser() user: User,
+  ) {
+    return this.tasksService.update(id, updateTaskDto, user);
   }
 
   @Delete(':id')
@@ -89,8 +93,8 @@ export class TasksController {
     description: 'Delete a task by ID',
   })
   @ApiResponse({ status: 404, description: 'Task not found' })
-  async remove(@Param('id') id: number) {
-    return this.tasksService.remove(id);
+  async remove(@Param('id') id: number, @GetUser() user: User) {
+    return this.tasksService.remove(id, user);
   }
 
   @Post(':taskId/tags/:tagId')
