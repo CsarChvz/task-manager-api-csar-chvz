@@ -6,11 +6,16 @@ import { Comment } from './entities/comment.entity';
 import { Task } from '../tasks/entities/task.entity';
 import { User } from '../auth/entities/user.entity';
 import { AuthModule } from '../auth/auth.module';
+import { LogsModule } from '../logs/logs.module';
 
 @Module({
   controllers: [CommentsController],
   providers: [CommentsService],
-  imports: [TypeOrmModule.forFeature([Comment, Task, User]), AuthModule],
+  imports: [
+    TypeOrmModule.forFeature([Comment, Task, User]),
+    AuthModule,
+    LogsModule,
+  ],
   exports: [TypeOrmModule],
 })
 export class CommentsModule {}

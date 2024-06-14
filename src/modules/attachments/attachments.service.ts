@@ -4,6 +4,8 @@ import { Repository } from 'typeorm';
 import { Attachment } from './entities/attachment.entity';
 import { CreateAttachmentDto } from './dto/create-attachment.dto';
 import { Task } from '../tasks/entities/task.entity';
+import { LogsService } from '../logs/logs.service';
+import { User } from '../auth/entities/user.entity';
 
 @Injectable()
 export class AttachmentsService {
@@ -12,15 +14,24 @@ export class AttachmentsService {
     private readonly attachmentRepository: Repository<Attachment>,
     @InjectRepository(Task)
     private readonly taskRepository: Repository<Task>,
+    private readonly logsService: LogsService,
   ) {}
 
-  async findAll(): Promise<Attachment[]> {
-    return this.attachmentRepository.find({
-      relations: ['task'], // Incluir la relación con las tareas para más contexto
+  async findAll(user: User): Promise<Attachment[]> {
+    const attachments = await this.attachmentRepository.find({
+      relations: ['task'],
     });
+    await this.logsService.createLog(
+      user,
+      'LIST',
+      'Attachment',
+      0,
+      `Listed all attachments`,
+    );
+    return attachments;
   }
 
-  async findOne(id: number): Promise<Attachment> {
+  async findOne(id: number, user: User): Promise<Attachment> {
     const attachment = await this.attachmentRepository.findOne({
       where: { id },
       relations: ['task'],
@@ -28,10 +39,20 @@ export class AttachmentsService {
     if (!attachment) {
       throw new NotFoundException(`Attachment with ID ${id} not found`);
     }
+    await this.logsService.createLog(
+      user,
+      'GET',
+      'Attachment',
+      attachment.id,
+      `Fetched attachment with ID: ${attachment.id}`,
+    );
     return attachment;
   }
 
-  async create(createAttachmentDto: CreateAttachmentDto): Promise<Attachment> {
+  async create(
+    createAttachmentDto: CreateAttachmentDto,
+    user: User,
+  ): Promise<Attachment> {
     const { taskId, ...attachmentData } = createAttachmentDto;
 
     const task = await this.taskRepository.findOne({ where: { id: taskId } });
@@ -45,10 +66,18 @@ export class AttachmentsService {
     });
 
     await this.attachmentRepository.save(attachment);
+    await this.logsService.createLog(
+      user,
+      'CREATE',
+      'Attachment',
+      attachment.id,
+      `Created attachment with data: ${JSON.stringify(attachmentData)}`,
+    );
+
     return attachment;
   }
 
-  async remove(id: number): Promise<{ message: string }> {
+  async remove(id: number, user: User): Promise<{ message: string }> {
     const attachment = await this.attachmentRepository.findOne({
       where: { id },
       relations: ['task'],
@@ -64,6 +93,13 @@ export class AttachmentsService {
     }
 
     await this.attachmentRepository.remove(attachment);
+    await this.logsService.createLog(
+      user,
+      'DELETE',
+      'Attachment',
+      attachment.id,
+      `Deleted attachment with ID: ${attachment.id}`,
+    );
 
     return {
       message: `Attachment with ID ${id} has been successfully removed`,
