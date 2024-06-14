@@ -2,7 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { AttachmentsService } from './attachments.service';
 import { CreateAttachmentDto } from './dto/create-attachment.dto';
 import { UpdateAttachmentDto } from './dto/update-attachment.dto';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('Attachments')
 @Controller('attachments')
 export class AttachmentsController {
   constructor(private readonly attachmentsService: AttachmentsService) {}
@@ -23,7 +24,10 @@ export class AttachmentsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAttachmentDto: UpdateAttachmentDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateAttachmentDto: UpdateAttachmentDto,
+  ) {
     return this.attachmentsService.update(+id, updateAttachmentDto);
   }
 
