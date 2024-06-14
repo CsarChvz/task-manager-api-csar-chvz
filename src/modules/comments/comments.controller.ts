@@ -16,6 +16,7 @@ import {
   ApiOkResponse,
   ApiCreatedResponse,
   ApiResponse,
+  ApiOperation,
 } from '@nestjs/swagger';
 import { Comment } from './entities/comment.entity';
 import { Auth, GetUser } from '../auth/decorators';
@@ -30,20 +31,32 @@ export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
   @Get()
-  @ApiOkResponse({ type: [Comment], description: 'Get a list of comments' })
+  @ApiOperation({ summary: 'Get a list of comments' })
+  @ApiOkResponse({
+    type: [Comment],
+    description: 'Retrieve a list of all comments.',
+  })
   async findAll(@GetUser() user: User) {
     return this.commentsService.findAll(user);
   }
 
   @Get(':id')
-  @ApiOkResponse({ type: Comment, description: 'Get a comment by ID' })
+  @ApiOperation({ summary: 'Get a comment by ID' })
+  @ApiOkResponse({
+    type: Comment,
+    description: 'Retrieve a specific comment by ID.',
+  })
   @ApiResponse({ status: 404, description: 'Comment not found' })
   async findOne(@Param('id') id: number, @GetUser() user: User) {
     return this.commentsService.findOne(id, user);
   }
 
   @Post()
-  @ApiCreatedResponse({ type: Comment, description: 'Create a new comment' })
+  @ApiOperation({ summary: 'Create a new comment' })
+  @ApiCreatedResponse({
+    type: Comment,
+    description: 'Create and store a new comment.',
+  })
   @ApiResponse({ status: 400, description: 'Invalid data' })
   async create(
     @Body() createCommentDto: CreateCommentDto,
@@ -60,7 +73,11 @@ export class CommentsController {
   }
 
   @Put(':id')
-  @ApiOkResponse({ type: Comment, description: 'Update a comment by ID' })
+  @ApiOperation({ summary: 'Update a comment by ID' })
+  @ApiOkResponse({
+    type: Comment,
+    description: 'Update an existing comment by ID.',
+  })
   @ApiResponse({ status: 404, description: 'Comment not found' })
   async update(
     @Param('id') id: number,
@@ -71,8 +88,9 @@ export class CommentsController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete a comment by ID' })
   @ApiOkResponse({
-    description: 'Delete a comment by ID',
+    description: 'Remove a comment by its ID.',
     type: Object,
     schema: {
       example: { message: 'Comment with ID 1 has been successfully removed' },

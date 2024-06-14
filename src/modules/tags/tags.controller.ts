@@ -16,6 +16,7 @@ import {
   ApiOkResponse,
   ApiCreatedResponse,
   ApiResponse,
+  ApiOperation,
 } from '@nestjs/swagger';
 import { Tag } from './entities/tag.entity';
 import { Auth, GetUser } from '../auth/decorators';
@@ -30,20 +31,23 @@ export class TagsController {
   constructor(private readonly tagsService: TagsService) {}
 
   @Get()
-  @ApiOkResponse({ type: [Tag], description: 'Get a list of tags' })
+  @ApiOperation({ summary: 'Get a list of tags' })
+  @ApiOkResponse({ type: [Tag], description: 'Retrieve a list of all tags.' })
   async findAll(@GetUser() user: User) {
     return this.tagsService.findAll(user);
   }
 
   @Get(':id')
-  @ApiOkResponse({ type: Tag, description: 'Get a tag by ID' })
+  @ApiOperation({ summary: 'Get a tag by ID' })
+  @ApiOkResponse({ type: Tag, description: 'Retrieve a specific tag by ID.' })
   @ApiResponse({ status: 404, description: 'Tag not found' })
   async findOne(@Param('id') id: number, @GetUser() user: User) {
     return this.tagsService.findOne(id, user);
   }
 
   @Post()
-  @ApiCreatedResponse({ type: Tag, description: 'Create a new tag' })
+  @ApiOperation({ summary: 'Create a new tag' })
+  @ApiCreatedResponse({ type: Tag, description: 'Create and store a new tag.' })
   @ApiResponse({ status: 400, description: 'Invalid data' })
   async create(@Body() createTagDto: CreateTagDto, @GetUser() user: User) {
     const createdTag = await this.tagsService.create(createTagDto, user);
@@ -52,7 +56,8 @@ export class TagsController {
   }
 
   @Put(':id')
-  @ApiOkResponse({ type: Tag, description: 'Update a tag by ID' })
+  @ApiOperation({ summary: 'Update a tag by ID' })
+  @ApiOkResponse({ type: Tag, description: 'Update an existing tag by ID.' })
   @ApiResponse({ status: 404, description: 'Tag not found' })
   async update(
     @Param('id') id: number,
@@ -63,8 +68,9 @@ export class TagsController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete a tag by ID' })
   @ApiOkResponse({
-    description: 'Delete a tag by ID',
+    description: 'Remove a tag by its ID.',
     type: Object,
     schema: {
       example: { message: 'Tag with ID 1 has been successfully removed' },

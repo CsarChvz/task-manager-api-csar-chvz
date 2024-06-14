@@ -14,6 +14,7 @@ import {
   ApiOkResponse,
   ApiCreatedResponse,
   ApiResponse,
+  ApiOperation,
 } from '@nestjs/swagger';
 import { Attachment } from './entities/attachment.entity';
 import { Auth, GetUser } from '../auth/decorators';
@@ -28,25 +29,31 @@ export class AttachmentsController {
   constructor(private readonly attachmentsService: AttachmentsService) {}
 
   @Get()
+  @ApiOperation({ summary: 'Get a list of attachments' })
   @ApiOkResponse({
     type: [Attachment],
-    description: 'Get a list of attachments',
+    description: 'Retrieve a list of all attachments.',
   })
   async findAll(@GetUser() user: User) {
     return this.attachmentsService.findAll(user);
   }
 
   @Get(':id')
-  @ApiOkResponse({ type: Attachment, description: 'Get an attachment by ID' })
+  @ApiOperation({ summary: 'Get an attachment by ID' })
+  @ApiOkResponse({
+    type: Attachment,
+    description: 'Retrieve a specific attachment by ID.',
+  })
   @ApiResponse({ status: 404, description: 'Attachment not found' })
   async findOne(@Param('id') id: number, @GetUser() user: User) {
     return this.attachmentsService.findOne(id, user);
   }
 
   @Post()
+  @ApiOperation({ summary: 'Upload a new attachment' })
   @ApiCreatedResponse({
     type: Attachment,
-    description: 'Upload a new attachment',
+    description: 'Upload and store a new attachment.',
   })
   @ApiResponse({ status: 400, description: 'Invalid data' })
   async create(
@@ -64,8 +71,9 @@ export class AttachmentsController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete an attachment by ID' })
   @ApiOkResponse({
-    description: 'Delete an attachment by ID',
+    description: 'Remove an attachment by its ID.',
     type: Object,
     schema: {
       example: {
@@ -75,7 +83,7 @@ export class AttachmentsController {
   })
   @ApiResponse({ status: 404, description: 'Attachment not found' })
   async remove(@Param('id') id: number, @GetUser() user: User) {
-    const result = this.attachmentsService.remove(id, user);
+    const result = await this.attachmentsService.remove(id, user);
     this.logger.log(`Attachment with ID ${id} has been successfully removed`);
     return result;
   }

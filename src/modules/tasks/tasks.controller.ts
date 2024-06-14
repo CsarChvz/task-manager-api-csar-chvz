@@ -21,7 +21,7 @@ import {
   ApiOkResponse,
   ApiCreatedResponse,
   ApiResponse,
-  ApiQuery,
+  ApiOperation,
 } from '@nestjs/swagger';
 import { User } from '../auth/entities/user.entity';
 import { Task } from './entities/task.entity';
@@ -36,7 +36,8 @@ export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
   @Get()
-  @ApiOkResponse({ type: [Task], description: 'Get a list of tasks' })
+  @ApiOperation({ summary: 'Get a list of tasks' })
+  @ApiOkResponse({ type: [Task], description: 'Retrieve a list of all tasks.' })
   async findAll(
     @Query('page') page: number,
     @Query('limit') limit: number,
@@ -46,25 +47,29 @@ export class TasksController {
   }
 
   @Get('search')
+  @ApiOperation({ summary: 'Search tasks based on criteria' })
   @ApiOkResponse({
     type: [Task],
-    description: 'Search tasks based on criteria',
+    description: 'Search and retrieve tasks based on provided criteria.',
   })
   async search(@Query() query: SearchTasksQueryDto, @GetUser() user: User) {
     return this.tasksService.search(query, user);
   }
 
   @Get(':id')
-  @Auth()
-  @ApiOkResponse({ type: Task, description: 'Get a task by ID' })
+  @ApiOperation({ summary: 'Get a task by ID' })
+  @ApiOkResponse({ type: Task, description: 'Retrieve a specific task by ID.' })
   @ApiResponse({ status: 404, description: 'Task not found' })
   async findOne(@Param('id') id: number, @GetUser() user: User) {
     return this.tasksService.findOne(id, user);
   }
 
   @Post()
-  @Auth()
-  @ApiCreatedResponse({ type: Task, description: 'Create a new task' })
+  @ApiOperation({ summary: 'Create a new task' })
+  @ApiCreatedResponse({
+    type: Task,
+    description: 'Create and store a new task.',
+  })
   @ApiResponse({ status: 400, description: 'Invalid data' })
   async create(@Body() createTaskDto: CreateTaskDto, @GetUser() user: User) {
     const createdTask = await this.tasksService.create(createTaskDto, user);
@@ -75,8 +80,8 @@ export class TasksController {
   }
 
   @Put(':id')
-  @Auth()
-  @ApiOkResponse({ type: Task, description: 'Update a task by ID' })
+  @ApiOperation({ summary: 'Update a task by ID' })
+  @ApiOkResponse({ type: Task, description: 'Update an existing task by ID.' })
   @ApiResponse({ status: 404, description: 'Task not found' })
   async update(
     @Param('id') id: number,
@@ -87,10 +92,10 @@ export class TasksController {
   }
 
   @Delete(':id')
-  @Auth()
+  @ApiOperation({ summary: 'Delete a task by ID' })
   @ApiOkResponse({
     type: DeleteTaskResponseDto,
-    description: 'Delete a task by ID',
+    description: 'Remove a task by its ID.',
   })
   @ApiResponse({ status: 404, description: 'Task not found' })
   async remove(@Param('id') id: number, @GetUser() user: User) {
@@ -98,8 +103,8 @@ export class TasksController {
   }
 
   @Post(':taskId/tags/:tagId')
-  @Auth()
-  @ApiCreatedResponse({ description: 'Tag added to task successfully' })
+  @ApiOperation({ summary: 'Add a tag to a task' })
+  @ApiCreatedResponse({ description: 'Tag added to task successfully.' })
   @ApiResponse({ status: 404, description: 'Task or Tag not found' })
   async addTagToTask(
     @Param('taskId') taskId: number,
@@ -109,8 +114,8 @@ export class TasksController {
   }
 
   @Delete(':taskId/tags/:tagId')
-  @Auth()
-  @ApiOkResponse({ description: 'Tag removed from task successfully' })
+  @ApiOperation({ summary: 'Remove a tag from a task' })
+  @ApiOkResponse({ description: 'Tag removed from task successfully.' })
   @ApiResponse({ status: 404, description: 'Task or Tag not found' })
   async removeTagFromTask(
     @Param('taskId') taskId: number,
