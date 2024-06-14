@@ -66,7 +66,7 @@ export class Task {
   })
   updated_at: Date;
 
-  @ManyToMany(() => Tag)
+  @ManyToMany(() => Tag, (tag) => tag.tasks, { cascade: true }) // Asegura que la relación es bidireccional
   @JoinTable({
     name: 'task_tags',
     joinColumn: { name: 'task_id', referencedColumnName: 'id' },
@@ -78,14 +78,20 @@ export class Task {
   })
   tags: Tag[];
 
-  @OneToMany(() => Comment, (comment) => comment.task)
+  @OneToMany(() => Comment, (comment) => comment.task, {
+    cascade: ['insert', 'update', 'remove'],
+    onDelete: 'CASCADE',
+  })
   @ApiProperty({
     description: 'Comments associated with the task',
     type: () => [Comment],
   })
   comments: Comment[];
 
-  @OneToMany(() => Attachment, (attachment) => attachment.task)
+  @OneToMany(() => Attachment, (attachment) => attachment.task, {
+    cascade: ['insert', 'update', 'remove'],
+    onDelete: 'CASCADE',
+  })
   @ApiProperty({
     description: 'Attachments associated with the task',
     type: () => [Attachment],

@@ -49,8 +49,22 @@ export class AttachmentsService {
   }
 
   async remove(id: number): Promise<{ message: string }> {
-    const attachment = await this.findOne(id);
+    const attachment = await this.attachmentRepository.findOne({
+      where: { id },
+      relations: ['task'],
+    });
+
+    if (!attachment) {
+      throw new NotFoundException(`Attachment with ID ${id} not found`);
+    }
+
+    if (attachment.task) {
+      attachment.task = null;
+      await this.attachmentRepository.save(attachment);
+    }
+
     await this.attachmentRepository.remove(attachment);
+
     return {
       message: `Attachment with ID ${id} has been successfully removed`,
     };

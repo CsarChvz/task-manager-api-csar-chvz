@@ -7,6 +7,7 @@ import {
   Column,
   CreateDateColumn,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity()
@@ -26,7 +27,8 @@ export class Comment {
   })
   created_at: Date;
 
-  @ManyToOne(() => Task, (task) => task.comments)
+  @ManyToOne(() => Task, (task) => task.comments, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'task_id' })
   @ApiProperty({
     description: 'The task associated with the comment',
     type: () => Task,
@@ -34,6 +36,7 @@ export class Comment {
   task: Task;
 
   @ManyToOne(() => User, (user) => user.comments)
+  @JoinColumn({ name: 'user_id' })
   @ApiProperty({
     description: 'The user who created the comment',
     type: () => User,

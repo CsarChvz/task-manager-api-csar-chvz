@@ -92,4 +92,26 @@ export class TasksController {
   async remove(@Param('id') id: number) {
     return this.tasksService.remove(id);
   }
+
+  @Post(':taskId/tags/:tagId')
+  @Auth()
+  @ApiCreatedResponse({ description: 'Tag added to task successfully' })
+  @ApiResponse({ status: 404, description: 'Task or Tag not found' })
+  async addTagToTask(
+    @Param('taskId') taskId: number,
+    @Param('tagId') tagId: number,
+  ) {
+    return this.tasksService.addTagToTask(taskId, tagId);
+  }
+
+  @Delete(':taskId/tags/:tagId')
+  @Auth()
+  @ApiOkResponse({ description: 'Tag removed from task successfully' })
+  @ApiResponse({ status: 404, description: 'Task or Tag not found' })
+  async removeTagFromTask(
+    @Param('taskId') taskId: number,
+    @Param('tagId') tagId: number,
+  ) {
+    return this.tasksService.removeTagFromTask(taskId, tagId);
+  }
 }
