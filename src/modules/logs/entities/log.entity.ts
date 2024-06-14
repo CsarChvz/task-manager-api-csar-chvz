@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'src/modules/auth/entities/user.entity';
 import { Task } from 'src/modules/tasks/entities/task.entity';
 import {
@@ -14,26 +15,53 @@ import {
 @Index('idx_log_action_type', ['action_type']) // Índice en el tipo de acción
 export class Log {
   @PrimaryGeneratedColumn()
+  @ApiProperty({ description: 'The unique identifier of the log' })
   id: number;
 
   @Column({ length: 50 })
-  entity_type: string; // Tipo de entidad, por ejemplo, 'Task', 'Comment'
+  @ApiProperty({
+    description: 'The type of the entity affected (e.g., Task, Comment)',
+    maxLength: 50,
+  })
+  entity_type: string;
 
   @Column()
-  entity_id: number; // ID de la entidad afectada
+  @ApiProperty({ description: 'The ID of the affected entity' })
+  entity_id: number;
 
   @Column({ length: 50 })
-  action_type: string; // Tipo de acción, por ejemplo, 'CREATE', 'UPDATE', 'DELETE'
+  @ApiProperty({
+    description: 'The type of action performed (e.g., CREATE, UPDATE, DELETE)',
+    maxLength: 50,
+  })
+  action_type: string;
 
   @Column('text', { nullable: true })
-  changes: string; // Detalles de los cambios realizados (opcional)
+  @ApiProperty({
+    description: 'Details of the changes made (optional)',
+    nullable: true,
+  })
+  changes: string;
 
   @CreateDateColumn()
+  @ApiProperty({
+    description: 'The timestamp when the log was created',
+    type: Date,
+  })
   timestamp: Date;
 
   @ManyToOne(() => User, (user) => user.logs)
+  @ApiProperty({
+    description: 'The user who performed the action',
+    type: () => User,
+  })
   user: User;
 
   @ManyToOne(() => Task, (task) => task.logs)
+  @ApiProperty({
+    description: 'The task associated with the log',
+    type: () => Task,
+    nullable: true,
+  })
   task: Task;
 }

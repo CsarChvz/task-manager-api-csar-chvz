@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Param,
+  Body,
+  Query,
+} from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
@@ -8,28 +17,43 @@ import { ApiTags } from '@nestjs/swagger';
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
-  @Post()
-  create(@Body() createTaskDto: CreateTaskDto) {
-    return this.tasksService.create(createTaskDto);
-  }
-
   @Get()
-  findAll() {
-    return this.tasksService.findAll();
+  async findAll(
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+    @Query('status') status: string,
+    @Query('dueDate') dueDate: string,
+  ) {
+    return this.tasksService.findAll({ page, limit, status, dueDate });
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.tasksService.findOne(+id);
+  async findOne(@Param('id') id: number) {
+    return this.tasksService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
-    return this.tasksService.update(+id, updateTaskDto);
+  @Post()
+  async create(@Body() createTaskDto: CreateTaskDto) {
+    return this.tasksService.create(createTaskDto);
+  }
+
+  @Put(':id')
+  async update(@Param('id') id: number, @Body() updateTaskDto: UpdateTaskDto) {
+    return this.tasksService.update(id, updateTaskDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.tasksService.remove(+id);
+  async remove(@Param('id') id: number) {
+    return this.tasksService.remove(id);
+  }
+
+  @Get('search')
+  async search(
+    @Query('keyword') keyword: string,
+    @Query('status') status: string,
+    @Query('dueDate') dueDate: string,
+    @Query('fileType') fileType: string,
+  ) {
+    return this.tasksService.search({ keyword, status, dueDate, fileType });
   }
 }
