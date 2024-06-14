@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsString, IsNotEmpty } from 'class-validator';
 
-export class CreateAttachmentDto {
+export class CreateAttachmentForTaskDto {
   @ApiProperty({ description: 'The file path of the attachment' })
   @IsString()
   @IsNotEmpty()
@@ -11,11 +11,4 @@ export class CreateAttachmentDto {
   @IsString()
   @IsNotEmpty()
   file_type: string;
-
-  @ApiProperty({
-    description: 'The ID of the task associated with the attachment',
-  })
-  @IsNumber()
-  @IsNotEmpty()
-  taskId: number;
 }

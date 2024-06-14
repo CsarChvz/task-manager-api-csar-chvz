@@ -1,0 +1,597 @@
+{
+    "clientName": "Thunder Client",
+    "collectionName": "Task Manager API - CsarChvz",
+    "collectionId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+    "dateExported": "2024-06-14T21:38:43.680Z",
+    "version": "1.2",
+    "folders": [
+        {
+            "_id": "9f5d8f83-be0f-4169-a47b-98d8f61a26b5",
+            "name": "Authentication",
+            "containerId": "",
+            "created": "2024-06-14T15:07:47.434Z",
+            "sortNum": 5000
+        },
+        {
+            "_id": "d5dd7cad-3aa6-4d09-b38b-44a46aab87fc",
+            "name": "Tasks",
+            "containerId": "",
+            "created": "2024-06-14T15:07:21.676Z",
+            "sortNum": 10000
+        },
+        {
+            "_id": "e3dbe70d-9899-4134-8d7e-26332111383c",
+            "name": "Tags",
+            "containerId": "",
+            "created": "2024-06-14T16:15:45.277Z",
+            "sortNum": 30000
+        },
+        {
+            "_id": "4504e5d5-7a08-4c34-8ad2-b0b63ccf8c49",
+            "name": "Comments",
+            "containerId": "",
+            "created": "2024-06-14T16:28:09.976Z",
+            "sortNum": 40000
+        },
+        {
+            "_id": "d9176ca1-35b2-4e1c-b845-8849fe2ce76a",
+            "name": "Attachments",
+            "containerId": "",
+            "created": "2024-06-14T16:38:11.294Z",
+            "sortNum": 50000
+        },
+        {
+            "_id": "58b06165-ac68-4d77-817c-6b91858324c9",
+            "name": "Logs",
+            "containerId": "",
+            "created": "2024-06-14T16:38:16.942Z",
+            "sortNum": 60000
+        }
+    ],
+    "requests": [
+        {
+            "_id": "814d2500-4c3a-4638-8aee-feec616d0647",
+            "colId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+            "containerId": "58b06165-ac68-4d77-817c-6b91858324c9",
+            "name": "Get Logs",
+            "url": "http://localhost:3000/api/logs?entity_type=Task&action_type=GET&entity_id=28",
+            "method": "GET",
+            "sortNum": 5000,
+            "created": "2024-06-14T21:20:30.578Z",
+            "modified": "2024-06-14T21:24:11.728Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "entity_type",
+                    "value": "Task",
+                    "isPath": false
+                },
+                {
+                    "name": "action_type",
+                    "value": "GET",
+                    "isPath": false
+                },
+                {
+                    "name": "entity_id",
+                    "value": "28",
+                    "isPath": false
+                }
+            ],
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{jwtToken}}"
+            }
+        },
+        {
+            "_id": "c3e52714-a96d-4fe7-ae7a-e43da7f1bf7a",
+            "colId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+            "containerId": "9f5d8f83-be0f-4169-a47b-98d8f61a26b5",
+            "name": "Register User",
+            "url": "localhost:3000/api/auth/register",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2024-06-14T02:04:41.040Z",
+            "modified": "2024-06-14T17:08:05.714Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"Melissa\",\n  \"email\": \"melissa@gmail.com\",\n  \"password\": \"Password10+x\"\n}",
+                "form": []
+            },
+            "postReq": {
+                "inlineScripts": [
+                    {
+                        "script": [
+                            "// Suponiendo que el token está en la respuesta bajo el campo `token`",
+                            "const response = pm.response.json();",
+                            "pm.environment.set('jwtToken', response.token);",
+                            ""
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "_id": "2e986fd9-5276-4014-8865-60a68da42972",
+            "colId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+            "containerId": "d5dd7cad-3aa6-4d09-b38b-44a46aab87fc",
+            "name": "Get Tasks",
+            "url": "http://localhost:3000/api/tasks?page=1&limit=10",
+            "method": "GET",
+            "sortNum": 10000,
+            "created": "2024-06-14T15:02:33.490Z",
+            "modified": "2024-06-14T17:56:08.439Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "page",
+                    "value": "1",
+                    "isPath": false
+                },
+                {
+                    "name": "limit",
+                    "value": "10",
+                    "isPath": false
+                }
+            ],
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{jwtToken}}"
+            }
+        },
+        {
+            "_id": "5bacfa73-1eba-4d85-a4dd-d1cf4f0218eb",
+            "colId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+            "containerId": "58b06165-ac68-4d77-817c-6b91858324c9",
+            "name": "Get Log",
+            "url": "http://localhost:3000/api/logs/9",
+            "method": "GET",
+            "sortNum": 10000,
+            "created": "2024-06-14T21:17:54.089Z",
+            "modified": "2024-06-14T21:20:20.093Z",
+            "headers": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{jwtToken}}"
+            }
+        },
+        {
+            "_id": "4acc0498-1ab3-4976-bf07-464ecdf09959",
+            "colId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+            "containerId": "d5dd7cad-3aa6-4d09-b38b-44a46aab87fc",
+            "name": "Create Task",
+            "url": "http://localhost:3000/api/tasks",
+            "method": "POST",
+            "sortNum": 12500,
+            "created": "2024-06-14T21:28:47.623Z",
+            "modified": "2024-06-14T21:29:21.155Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"title\": \"string\",\n  \"description\": \"string\",\n  \"status\": \"string\",\n  \"due_date\": \"2024-06-14\",\n  \"tags\": [\n    {\n      \"name\": \"Dev\"\n    },\n    {\n      \"name\": \"Backend\"\n    }\n  ]\n}",
+                "form": []
+            },
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{jwtToken}}"
+            }
+        },
+        {
+            "_id": "5e4e145d-cd78-428a-a7ba-53be144195eb",
+            "colId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+            "containerId": "d5dd7cad-3aa6-4d09-b38b-44a46aab87fc",
+            "name": "Search Tasks",
+            "url": "http://localhost:3000/api/tasks/search?keyword=Titulo",
+            "method": "GET",
+            "sortNum": 15000,
+            "created": "2024-06-14T15:23:17.494Z",
+            "modified": "2024-06-14T17:14:12.237Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "keyword",
+                    "value": "Titulo",
+                    "isPath": false
+                }
+            ],
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{jwtToken}}"
+            }
+        },
+        {
+            "_id": "41b08786-eb2f-41d2-a6b8-aefe6efd8c92",
+            "colId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+            "containerId": "9f5d8f83-be0f-4169-a47b-98d8f61a26b5",
+            "name": "Login User",
+            "url": "localhost:3000/api/auth/login",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2024-06-14T02:28:35.197Z",
+            "modified": "2024-06-14T17:21:40.964Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"email\": \"melissa@gmail.com\",\n  \"password\": \"Password10+x\"\n}",
+                "form": []
+            },
+            "postReq": {
+                "inlineScripts": [
+                    {
+                        "script": [
+                            "let token = tc.response.json",
+                            "tc.setVar(\"jwtToken\", token[\"token\"]);"
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "_id": "f7f9d14b-35a2-4e1d-a879-db3a8f4e402e",
+            "colId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+            "containerId": "d5dd7cad-3aa6-4d09-b38b-44a46aab87fc",
+            "name": "Get a Task",
+            "url": "http://localhost:3000/api/tasks/27",
+            "method": "GET",
+            "sortNum": 20000,
+            "created": "2024-06-14T14:59:19.092Z",
+            "modified": "2024-06-14T20:41:07.645Z",
+            "headers": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{jwtToken}}"
+            }
+        },
+        {
+            "_id": "aa7c8f6c-a047-4804-8049-7bcfd19668d1",
+            "colId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+            "containerId": "9f5d8f83-be0f-4169-a47b-98d8f61a26b5",
+            "name": "Private Route",
+            "url": "localhost:3000/api/auth/private",
+            "method": "GET",
+            "sortNum": 30000,
+            "created": "2024-06-14T03:11:03.815Z",
+            "modified": "2024-06-14T17:13:59.494Z",
+            "headers": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{jwtToken}}"
+            }
+        },
+        {
+            "_id": "b1cf117f-4f69-4286-aaea-b9284c846627",
+            "colId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+            "containerId": "9f5d8f83-be0f-4169-a47b-98d8f61a26b5",
+            "name": "Check Status",
+            "url": "localhost:3000/api/auth/check-status",
+            "method": "GET",
+            "sortNum": 40000,
+            "created": "2024-06-14T04:04:11.206Z",
+            "modified": "2024-06-14T17:14:02.658Z",
+            "headers": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{jwtToken}}"
+            }
+        },
+        {
+            "_id": "97ec8d5d-2a6d-484a-a21e-895535a6e6d2",
+            "colId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+            "containerId": "d5dd7cad-3aa6-4d09-b38b-44a46aab87fc",
+            "name": "Update a Task",
+            "url": "http://localhost:3000/api/tasks/29",
+            "method": "PUT",
+            "sortNum": 50000,
+            "created": "2024-06-14T15:08:06.030Z",
+            "modified": "2024-06-14T20:51:27.052Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"title\": \"string\"\n}",
+                "form": []
+            },
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{jwtToken}}"
+            }
+        },
+        {
+            "_id": "53fcc807-f31c-4755-ac31-c7beff937100",
+            "colId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+            "containerId": "d5dd7cad-3aa6-4d09-b38b-44a46aab87fc",
+            "name": "Delete a Task",
+            "url": "http://localhost:3000/api/tasks/28",
+            "method": "DELETE",
+            "sortNum": 60000,
+            "created": "2024-06-14T15:09:57.170Z",
+            "modified": "2024-06-14T20:48:20.157Z",
+            "headers": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{jwtToken}}"
+            }
+        },
+        {
+            "_id": "be36ad37-6c5c-431f-924b-f99cf7172c67",
+            "colId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+            "containerId": "d5dd7cad-3aa6-4d09-b38b-44a46aab87fc",
+            "name": "Set Existing Tag to Existing Task",
+            "url": "http://localhost:3000/api/tasks/32/tags/4",
+            "method": "POST",
+            "sortNum": 70000,
+            "created": "2024-06-14T21:29:52.051Z",
+            "modified": "2024-06-14T21:30:43.363Z",
+            "headers": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{jwtToken}}"
+            }
+        },
+        {
+            "_id": "e8b53019-7001-459a-9bdb-aa37382bcfed",
+            "colId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+            "containerId": "e3dbe70d-9899-4134-8d7e-26332111383c",
+            "name": "Get All Tags",
+            "url": "http://localhost:3000/api/tags",
+            "method": "GET",
+            "sortNum": 80000,
+            "created": "2024-06-14T16:15:54.276Z",
+            "modified": "2024-06-14T17:14:27.509Z",
+            "headers": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{jwtToken}}"
+            }
+        },
+        {
+            "_id": "e0740ab7-bc90-4bfc-9364-a0840b341200",
+            "colId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+            "containerId": "d5dd7cad-3aa6-4d09-b38b-44a46aab87fc",
+            "name": "Delete Existing Tag to Existing Task Copy",
+            "url": "http://localhost:3000/api/tasks/32/tags/4",
+            "method": "DELETE",
+            "sortNum": 80000,
+            "created": "2024-06-14T21:31:15.467Z",
+            "modified": "2024-06-14T21:31:26.657Z",
+            "headers": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{jwtToken}}"
+            }
+        },
+        {
+            "_id": "05d0122d-da96-4dcc-883a-304fa4e49600",
+            "colId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+            "containerId": "e3dbe70d-9899-4134-8d7e-26332111383c",
+            "name": "Get a Tag",
+            "url": "http://localhost:3000/api/tags/2",
+            "method": "GET",
+            "sortNum": 87500,
+            "created": "2024-06-14T16:18:04.195Z",
+            "modified": "2024-06-14T17:14:30.824Z",
+            "headers": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{jwtToken}}"
+            }
+        },
+        {
+            "_id": "55953c2d-0adf-4bca-872d-7249099a0a48",
+            "colId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+            "containerId": "e3dbe70d-9899-4134-8d7e-26332111383c",
+            "name": "Create Tag",
+            "url": "http://localhost:3000/api/tags",
+            "method": "POST",
+            "sortNum": 90000,
+            "created": "2024-06-14T16:17:05.025Z",
+            "modified": "2024-06-14T17:14:35.844Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"Casa\"\n}",
+                "form": []
+            },
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{jwtToken}}"
+            }
+        },
+        {
+            "_id": "ea53cf0d-626e-4915-aad2-caaca993bbd9",
+            "colId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+            "containerId": "d9176ca1-35b2-4e1c-b845-8849fe2ce76a",
+            "name": "Get Attachments",
+            "url": "http://localhost:3000/api/attachments",
+            "method": "GET",
+            "sortNum": 90000,
+            "created": "2024-06-14T16:42:14.659Z",
+            "modified": "2024-06-14T17:15:16.293Z",
+            "headers": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{jwtToken}}"
+            }
+        },
+        {
+            "_id": "993871b7-1aec-4596-83b0-f97e19277748",
+            "colId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+            "containerId": "e3dbe70d-9899-4134-8d7e-26332111383c",
+            "name": "Update Tag",
+            "url": "http://localhost:3000/api/tags/2",
+            "method": "PUT",
+            "sortNum": 100000,
+            "created": "2024-06-14T16:18:51.385Z",
+            "modified": "2024-06-14T17:14:38.483Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"Casa - Modified\"\n}",
+                "form": []
+            },
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{jwtToken}}"
+            }
+        },
+        {
+            "_id": "65fee8ca-c4ce-456c-823d-b0d035f3344e",
+            "colId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+            "containerId": "d9176ca1-35b2-4e1c-b845-8849fe2ce76a",
+            "name": "Create Attachment",
+            "url": "http://localhost:3000/api/attachments",
+            "method": "POST",
+            "sortNum": 100000,
+            "created": "2024-06-14T16:45:56.948Z",
+            "modified": "2024-06-14T17:15:26.879Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"file_path\": \"s3://url-example\",\n  \"file_type\": \"PDF\",\n  \"taskId\": 4\n}",
+                "form": []
+            },
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{jwtToken}}"
+            }
+        },
+        {
+            "_id": "77aa4864-bfa6-4be5-96ca-1b670ca803f4",
+            "colId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+            "containerId": "e3dbe70d-9899-4134-8d7e-26332111383c",
+            "name": "Delete Tag",
+            "url": "http://localhost:3000/api/tags/7",
+            "method": "DELETE",
+            "sortNum": 110000,
+            "created": "2024-06-14T16:22:05.428Z",
+            "modified": "2024-06-14T18:29:15.922Z",
+            "headers": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{jwtToken}}"
+            }
+        },
+        {
+            "_id": "b2f0b0a7-212f-4e6b-ad0e-9fdd81150391",
+            "colId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+            "containerId": "d9176ca1-35b2-4e1c-b845-8849fe2ce76a",
+            "name": "Get Attachment",
+            "url": "http://localhost:3000/api/attachments/2",
+            "method": "GET",
+            "sortNum": 110000,
+            "created": "2024-06-14T16:46:44.929Z",
+            "modified": "2024-06-14T21:18:43.142Z",
+            "headers": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{jwtToken}}"
+            }
+        },
+        {
+            "_id": "c4dff851-3d1e-4650-b917-018ebe9bb8ac",
+            "colId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+            "containerId": "d9176ca1-35b2-4e1c-b845-8849fe2ce76a",
+            "name": "Delete Attachment",
+            "url": "http://localhost:3000/api/attachments/5",
+            "method": "DELETE",
+            "sortNum": 120000,
+            "created": "2024-06-14T16:47:30.651Z",
+            "modified": "2024-06-14T17:50:45.561Z",
+            "headers": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{jwtToken}}"
+            }
+        },
+        {
+            "_id": "da5bf38d-3940-4034-bd0c-0baf8aa13add",
+            "colId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+            "containerId": "4504e5d5-7a08-4c34-8ad2-b0b63ccf8c49",
+            "name": "Get Comments",
+            "url": "http://localhost:3000/api/comments",
+            "method": "GET",
+            "sortNum": 130000,
+            "created": "2024-06-14T16:28:18.214Z",
+            "modified": "2024-06-14T17:14:44.859Z",
+            "headers": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{jwtToken}}"
+            }
+        },
+        {
+            "_id": "10be4e9a-a1b6-48ea-92e3-be5ebf53bb6b",
+            "colId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+            "containerId": "4504e5d5-7a08-4c34-8ad2-b0b63ccf8c49",
+            "name": "Create Comment",
+            "url": "http://localhost:3000/api/comments",
+            "method": "POST",
+            "sortNum": 140000,
+            "created": "2024-06-14T16:29:10.065Z",
+            "modified": "2024-06-14T18:38:07.820Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"content\": \"Este es otro COmentario\",\n  \"taskId\": 26,\n  \"userId\": 3\n}",
+                "form": []
+            },
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{jwtToken}}"
+            }
+        },
+        {
+            "_id": "fccbd3e0-50be-444f-9c07-2d2f6b3650e6",
+            "colId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+            "containerId": "4504e5d5-7a08-4c34-8ad2-b0b63ccf8c49",
+            "name": "Get Comment",
+            "url": "http://localhost:3000/api/comments/3",
+            "method": "GET",
+            "sortNum": 150000,
+            "created": "2024-06-14T16:31:20.539Z",
+            "modified": "2024-06-14T17:14:50.762Z",
+            "headers": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{jwtToken}}"
+            }
+        },
+        {
+            "_id": "4963c70e-d186-4116-8f0b-96356bb1beae",
+            "colId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+            "containerId": "4504e5d5-7a08-4c34-8ad2-b0b63ccf8c49",
+            "name": "Update Comment",
+            "url": "http://localhost:3000/api/comments/2",
+            "method": "PUT",
+            "sortNum": 160000,
+            "created": "2024-06-14T16:31:44.211Z",
+            "modified": "2024-06-14T17:14:54.193Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"content\": \"Comentario Modificado\"\n}",
+                "form": []
+            },
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{jwtToken}}"
+            }
+        },
+        {
+            "_id": "c8efe8e1-1c26-486c-8e6f-3c7abe822522",
+            "colId": "726968ea-3084-43fb-902a-dfcbd9db71da",
+            "containerId": "4504e5d5-7a08-4c34-8ad2-b0b63ccf8c49",
+            "name": "Delete Comment",
+            "url": "http://localhost:3000/api/comments/4",
+            "method": "DELETE",
+            "sortNum": 170000,
+            "created": "2024-06-14T16:33:49.260Z",
+            "modified": "2024-06-14T17:14:56.610Z",
+            "headers": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{jwtToken}}"
+            }
+        }
+    ],
+    "ref": "A2jsEkwTFk43OTlr3A1aHAisDpieC-ehZV4w-lAgj_AmUWFBNYJPCuYpjHN87zKnZKGD_fZOf9nYXM54z16H2g"
+}
