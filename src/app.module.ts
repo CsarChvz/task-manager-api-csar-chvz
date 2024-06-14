@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm'
-import { UsersModule } from './modules/users/users.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { TasksModule } from './modules/tasks/tasks.module';
 import { TagsModule } from './modules/tags/tags.module';
 import { CommentsModule } from './modules/comments/comments.module';
 import { AttachmentsModule } from './modules/attachments/attachments.module';
 import { LogsModule } from './modules/logs/logs.module';
 import { CommonModule } from './common/common.module';
+import { AuthModule } from './modules/auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -24,8 +24,6 @@ import { CommonModule } from './common/common.module';
       synchronize: true,
     }),
 
-    UsersModule,
-
     TasksModule,
 
     TagsModule,
@@ -37,6 +35,8 @@ import { CommonModule } from './common/common.module';
     LogsModule,
 
     CommonModule,
+
+    AuthModule,
   ],
 })
 export class AppModule {}

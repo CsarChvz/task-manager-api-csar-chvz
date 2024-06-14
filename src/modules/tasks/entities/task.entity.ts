@@ -1,7 +1,6 @@
 import { Attachment } from 'src/modules/attachments/entities/attachment.entity';
 import { Log } from 'src/modules/logs/entities/log.entity';
 import { Tag } from 'src/modules/tags/entities/tag.entity';
-import { User } from 'src/modules/users/entities/user.entity';
 import { Comment } from 'src/modules/comments/entities/comment.entity'; // Importa Comment
 import {
   Entity,
@@ -15,6 +14,7 @@ import {
   OneToMany,
   Index,
 } from 'typeorm';
+import { User } from 'src/modules/auth/entities/user.entity';
 
 @Entity()
 @Index('idx_task_status', ['status']) // Índice en el estado

@@ -8,5 +8,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   controllers: [AttachmentsController],
   providers: [AttachmentsService],
   imports: [TypeOrmModule.forFeature([Attachment])],
+  exports: [TypeOrmModule],
 })
 export class AttachmentsModule {}
