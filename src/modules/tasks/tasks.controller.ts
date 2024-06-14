@@ -36,8 +36,13 @@ export class TasksController {
 
   @Get()
   @ApiOkResponse({ type: [Task], description: 'Get a list of tasks' })
-  async findAll(@Query('page') page: number, @Query('limit') limit: number) {
-    return this.tasksService.findAll({ page, limit });
+  @Auth()
+  async findAll(
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+    @GetUser() user: User,
+  ) {
+    return this.tasksService.findAll({ page, limit }, user);
   }
 
   @Get('search')

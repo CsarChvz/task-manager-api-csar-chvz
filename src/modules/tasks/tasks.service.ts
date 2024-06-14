@@ -19,12 +19,13 @@ export class TasksService {
     private readonly attachmentRepository: Repository<Attachment>,
   ) {}
 
-  async findAll(query): Promise<{ data: Task[]; count: number }> {
+  async findAll(query, user: User): Promise<{ data: Task[]; count: number }> {
     const { page = 1, limit = 10, status, dueDate } = query;
 
     const where = {};
     if (status) where['status'] = status;
     if (dueDate) where['due_date'] = dueDate;
+    where['created_by'] = user;
 
     const [data, count] = await this.taskRepository.findAndCount({
       where,

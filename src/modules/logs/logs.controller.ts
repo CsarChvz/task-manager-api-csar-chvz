@@ -1,35 +1,31 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Param, Query, Logger } from '@nestjs/common';
 import { LogsService } from './logs.service';
-import { CreateLogDto } from './dto/create-log.dto';
-import { UpdateLogDto } from './dto/update-log.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { FilterLogsDto } from './dto/filter-logs.dto';
+import { ApiTags, ApiOkResponse, ApiResponse } from '@nestjs/swagger';
+import { Log } from './entities/log.entity';
+import { Auth } from '../auth/decorators';
+
 @ApiTags('Logs')
 @Controller('logs')
+@Auth()
 export class LogsController {
+  private readonly logger = new Logger(LogsController.name);
+
   constructor(private readonly logsService: LogsService) {}
 
-  @Post()
-  create(@Body() createLogDto: CreateLogDto) {
-    return this.logsService.create(createLogDto);
-  }
-
   @Get()
-  findAll() {
-    return this.logsService.findAll();
+  @ApiOkResponse({
+    type: [Log],
+    description: 'Get a list of logs with filters',
+  })
+  async findAll(@Query() filterLogsDto: FilterLogsDto) {
+    return this.logsService.findAll(filterLogsDto);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.logsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLogDto: UpdateLogDto) {
-    return this.logsService.update(+id, updateLogDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.logsService.remove(+id);
+  @ApiOkResponse({ type: Log, description: 'Get a log by ID' })
+  @ApiResponse({ status: 404, description: 'Log not found' })
+  async findOne(@Param('id') id: number) {
+    return this.logsService.findOne(id);
   }
 }
