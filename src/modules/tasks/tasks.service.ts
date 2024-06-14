@@ -7,6 +7,7 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { User } from '../auth/entities/user.entity';
 import { Attachment } from '../attachments/entities/attachment.entity';
 import { Tag } from '../tags/entities/tag.entity';
+import { LogsService } from '../logs/logs.service';
 
 @Injectable()
 export class TasksService {
@@ -17,6 +18,8 @@ export class TasksService {
     private readonly tagRepository: Repository<Tag>,
     @InjectRepository(Attachment)
     private readonly attachmentRepository: Repository<Attachment>,
+
+    private readonly logsService: LogsService,
   ) {}
 
   async findAll(query, user: User): Promise<{ data: Task[]; count: number }> {
@@ -32,16 +35,29 @@ export class TasksService {
       skip: (page - 1) * limit,
       relations: ['tags', 'comments', 'attachments'], // Incluir relaciones
     });
-
+    await this.logsService.createLog(
+      user,
+      'LIST',
+      'Task',
+      0,
+      `Listed tasks with query: ${JSON.stringify(query)}`,
+    );
     return { data, count };
   }
 
-  async findOne(id: number): Promise<Task> {
+  async findOne(id: number, user: User): Promise<Task> {
     const task = await this.taskRepository.findOne({
       where: { id },
       relations: ['tags', 'comments', 'attachments'], // Incluir relaciones
     });
     if (!task) throw new NotFoundException(`Task with ID ${id} not found`);
+    await this.logsService.createLog(
+      user,
+      'GET',
+      'Task',
+      task.id,
+      `Fetched task with ID: ${task.id}`,
+    );
     return task;
   }
 
@@ -83,12 +99,23 @@ export class TasksService {
     }
 
     await this.taskRepository.save(task);
+    await this.logsService.createLog(
+      user,
+      'CREATE',
+      'Task',
+      task.id,
+      JSON.stringify(createTaskDto),
+    );
 
     return task;
   }
 
-  async update(id: number, updateTaskDto: UpdateTaskDto): Promise<Task> {
-    const task = await this.findOne(id);
+  async update(
+    id: number,
+    updateTaskDto: UpdateTaskDto,
+    user: User,
+  ): Promise<Task> {
+    const task = await this.findOne(id, user);
 
     if (updateTaskDto.tags) {
       task.tags = await Promise.all(
@@ -105,48 +132,68 @@ export class TasksService {
       );
     }
 
-    if (updateTaskDto.attachments) {
-      const currentAttachmentIds = task.attachments.map(
-        (attachment) => attachment.id,
-      );
+    // if (updateTaskDto.attachments) {
+    //   const currentAttachmentIds = task.attachments.map(
+    //     (attachment) => attachment.id,
+    //   );
 
-      task.attachments = await Promise.all(
-        updateTaskDto.attachments.map(async (attachment) => {
-          const newAttachment = this.attachmentRepository.create(attachment);
-          await this.attachmentRepository.save(newAttachment);
-          return newAttachment;
-        }),
-      );
+    //   task.attachments = await Promise.all(
+    //     updateTaskDto.attachments.map(async (attachment) => {
+    //       const newAttachment = this.attachmentRepository.create(attachment);
+    //       await this.attachmentRepository.save(newAttachment);
+    //       return newAttachment;
+    //     }),
+    //   );
 
-      const newAttachmentIds = task.attachments.map(
-        (attachment) => attachment.id,
-      );
-      const attachmentsToRemove = currentAttachmentIds.filter(
-        (id) => !newAttachmentIds.includes(id),
-      );
+    //   const newAttachmentIds = task.attachments.map(
+    //     (attachment) => attachment.id,
+    //   );
+    //   const attachmentsToRemove = currentAttachmentIds.filter(
+    //     (id) => !newAttachmentIds.includes(id),
+    //   );
 
-      await this.attachmentRepository.delete(attachmentsToRemove);
-    }
+    //   await this.attachmentRepository.delete(attachmentsToRemove);
+    // }
 
     Object.assign(task, updateTaskDto);
     await this.taskRepository.save(task);
+
+    await this.logsService.createLog(
+      user,
+      'UPDATE',
+      'Task',
+      task.id,
+      JSON.stringify(updateTaskDto),
+    );
+
     return task;
   }
 
-  async remove(id: number): Promise<{ message: string }> {
+  async remove(id: number, user: User): Promise<{ message: string }> {
+    const task = await this.findOne(id, user);
     const result = await this.taskRepository.delete(id);
     if (result.affected === 0) {
       throw new NotFoundException(`Task with ID ${id} not found`);
     }
+    await this.logsService.createLog(
+      user,
+      'DELETE',
+      'Task',
+      task.id,
+      `Task with ID ${id} deleted`,
+    );
     return { message: `Task with ID ${id} has been successfully removed` };
   }
 
-  async search(criteria: {
-    keyword?: string;
-    status?: string;
-    dueDate?: string;
-    fileType?: string;
-  }): Promise<Task[]> {
+  async search(
+    criteria: {
+      keyword?: string;
+      status?: string;
+      dueDate?: string;
+      fileType?: string;
+    },
+    user: User,
+  ): Promise<Task[]> {
     const where: any = [];
 
     if (criteria.keyword) {
@@ -169,6 +216,13 @@ export class TasksService {
       relations: ['tags', 'comments', 'attachments'], // Incluir relaciones
     });
 
+    await this.logsService.createLog(
+      user,
+      'SEARCH',
+      'Task',
+      0,
+      `Searched tasks with criteria: ${JSON.stringify(criteria)}`,
+    );
     return tasks;
   }
 
@@ -185,6 +239,13 @@ export class TasksService {
     task.tags.push(tag);
     await this.taskRepository.save(task);
 
+    await this.logsService.createLog(
+      task.created_by,
+      'ADD_TAG',
+      'Task',
+      task.id,
+      `Added Tag with ID ${tagId} to Task`,
+    );
     return task;
   }
 
@@ -201,6 +262,13 @@ export class TasksService {
     task.tags = task.tags.filter((t) => t.id !== tagId);
     await this.taskRepository.save(task);
 
+    await this.logsService.createLog(
+      task.created_by,
+      'REMOVE_TAG',
+      'Task',
+      task.id,
+      `Removed Tag with ID ${tagId} from Task`,
+    );
     return task;
   }
 }

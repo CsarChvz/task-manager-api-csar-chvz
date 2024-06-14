@@ -57,11 +57,5 @@ export class Log {
   })
   user: User;
 
-  @ManyToOne(() => Task, (task) => task.logs)
-  @ApiProperty({
-    description: 'The task associated with the log',
-    type: () => Task,
-    nullable: true,
-  })
-  task: Task;
+
 }
