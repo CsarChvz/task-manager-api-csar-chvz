@@ -5,6 +5,8 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { GetUser } from './decorators';
 import { User } from './entities/user.entity';
 import { Auth } from './decorators';
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
