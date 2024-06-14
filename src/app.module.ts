@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { UsersModule } from './users/users.module';
-import { TasksModule } from './tasks/tasks.module';
-import { TagsModule } from './tags/tags.module';
-import { CommentsModule } from './comments/comments.module';
-import { AttachmentsModule } from './attachments/attachments.module';
-import { LogsModule } from './logs/logs.module';
+import { UsersModule } from './modules/users/users.module';
+import { TasksModule } from './modules/tasks/tasks.module';
+import { TagsModule } from './modules/tags/tags.module';
+import { CommentsModule } from './modules/comments/comments.module';
+import { AttachmentsModule } from './modules/attachments/attachments.module';
+import { LogsModule } from './modules/logs/logs.module';
 import { CommonModule } from './common/common.module';
 @Module({
   imports: [

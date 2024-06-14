@@ -1,5 +1,5 @@
-import { Task } from 'src/tasks/entities/task.entity';
-import { User } from 'src/users/entities/user.entity';
+import { Task } from 'src/modules/tasks/entities/task.entity';
+import { User } from 'src/modules/users/entities/user.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,

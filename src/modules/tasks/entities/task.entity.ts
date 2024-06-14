@@ -1,8 +1,8 @@
-import { Attachment } from 'src/attachments/entities/attachment.entity';
-import { Log } from 'src/logs/entities/log.entity';
-import { Tag } from 'src/tags/entities/tag.entity';
-import { User } from 'src/users/entities/user.entity';
-import { Comment } from 'src/comments/entities/comment.entity'; // Importa Comment
+import { Attachment } from 'src/modules/attachments/entities/attachment.entity';
+import { Log } from 'src/modules/logs/entities/log.entity';
+import { Tag } from 'src/modules/tags/entities/tag.entity';
+import { User } from 'src/modules/users/entities/user.entity';
+import { Comment } from 'src/modules/comments/entities/comment.entity'; // Importa Comment
 import {
   Entity,
   PrimaryGeneratedColumn,

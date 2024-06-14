@@ -1,6 +1,6 @@
-import { Log } from 'src/logs/entities/log.entity';
-import { Task } from 'src/tasks/entities/task.entity';
-import { Comment } from 'src/comments/entities/comment.entity'; // Importa Comment
+import { Log } from 'src/modules/logs/entities/log.entity';
+import { Task } from 'src/modules/tasks/entities/task.entity';
+import { Comment } from 'src/modules/comments/entities/comment.entity'; // Importa Comment
 import {
   Entity,
   PrimaryGeneratedColumn,
