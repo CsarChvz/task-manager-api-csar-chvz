@@ -7,6 +7,7 @@ import { TagsModule } from './tags/tags.module';
 import { CommentsModule } from './comments/comments.module';
 import { AttachmentsModule } from './attachments/attachments.module';
 import { LogsModule } from './logs/logs.module';
+import { CommonModule } from './common/common.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -34,6 +35,8 @@ import { LogsModule } from './logs/logs.module';
     AttachmentsModule,
 
     LogsModule,
+
+    CommonModule,
   ],
 })
 export class AppModule {}

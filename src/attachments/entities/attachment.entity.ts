@@ -1,20 +1,28 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, Index } from "typeorm";
+import { Task } from 'src/tasks/entities/task.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  ManyToOne,
+  Index,
+} from 'typeorm';
 
 @Entity()
-@Index("idx_attachment_file_type", ["file_type"]) // Índice en el tipo de archivo
+@Index('idx_attachment_file_type', ['file_type']) // Índice en el tipo de archivo
 export class Attachment {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column({ length: 255 })
-    file_path: string;
+  @Column({ length: 255 })
+  file_path: string;
 
-    @Column({ length: 50 })
-    file_type: string;
+  @Column({ length: 50 })
+  file_type: string;
 
-    @CreateDateColumn()
-    uploaded_at: Date;
+  @CreateDateColumn()
+  uploaded_at: Date;
 
-    @ManyToOne(() => Task, task => task.attachments)
-    task: Task;
+  @ManyToOne(() => Task, (task) => task.attachments)
+  task: Task;
 }

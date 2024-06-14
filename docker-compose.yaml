@@ -13,14 +13,13 @@ services:
     networks:
       - taskmanager_network  
 
-  pgadmin:
-    image: dpage/pgadmin4:latest  
-    container_name: pgadmin 
+  adminer:
+    image: adminer:latest  
+    container_name: adminer 
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com  
-      PGADMIN_DEFAULT_PASSWORD: admin  
+      ADMINER_DEFAULT_SERVER: taskmanager_db  # Conectar por defecto al servicio de PostgreSQL
     ports:
-      - "5050:80"  
+      - "8080:8080"  # Adminer estará disponible en http://localhost:8080
     depends_on:
       - taskmanager  
     networks:

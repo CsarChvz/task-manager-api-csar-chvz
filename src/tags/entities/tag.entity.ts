@@ -1,13 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from "typeorm";
+import { Task } from 'src/tasks/entities/task.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm';
 
 @Entity()
 export class Tag {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column({ length: 50 })
-    name: string;
+  @Column({ length: 50 })
+  name: string;
 
-    @ManyToMany(() => Task, task => task.tags)
-    tasks: Task[];
+  @ManyToMany(() => Task, (task) => task.tags)
+  tasks: Task[];
 }
