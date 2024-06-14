@@ -11,9 +11,11 @@ import {
   ApiOkResponse,
   ApiCreatedResponse,
   ApiResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 
 @ApiTags('Auth')
+@ApiBearerAuth('access-token')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

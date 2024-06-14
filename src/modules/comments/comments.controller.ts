@@ -17,12 +17,14 @@ import {
   ApiCreatedResponse,
   ApiResponse,
   ApiOperation,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { Comment } from './entities/comment.entity';
 import { Auth, GetUser } from '../auth/decorators';
 import { User } from '../auth/entities/user.entity';
 
 @ApiTags('Comments')
+@ApiBearerAuth('access-token')
 @Controller('comments')
 @Auth()
 export class CommentsController {

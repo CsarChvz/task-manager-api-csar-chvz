@@ -22,12 +22,14 @@ import {
   ApiCreatedResponse,
   ApiResponse,
   ApiOperation,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { User } from '../auth/entities/user.entity';
 import { Task } from './entities/task.entity';
 import { Auth, GetUser } from '../auth/decorators';
 
 @ApiTags('Tasks')
+@ApiBearerAuth('access-token')
 @Controller('tasks')
 @Auth()
 export class TasksController {

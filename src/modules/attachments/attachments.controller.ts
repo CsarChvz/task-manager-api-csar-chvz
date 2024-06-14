@@ -15,12 +15,14 @@ import {
   ApiCreatedResponse,
   ApiResponse,
   ApiOperation,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { Attachment } from './entities/attachment.entity';
 import { Auth, GetUser } from '../auth/decorators';
 import { User } from '../auth/entities/user.entity';
 
 @ApiTags('Attachments')
+@ApiBearerAuth('access-token')
 @Controller('attachments')
 @Auth()
 export class AttachmentsController {

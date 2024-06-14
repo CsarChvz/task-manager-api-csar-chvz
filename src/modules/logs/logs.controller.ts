@@ -6,11 +6,13 @@ import {
   ApiOkResponse,
   ApiResponse,
   ApiOperation,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { Log } from './entities/log.entity';
 import { Auth } from '../auth/decorators';
 
 @ApiTags('Logs')
+@ApiBearerAuth('access-token')
 @Controller('logs')
 @Auth()
 export class LogsController {
